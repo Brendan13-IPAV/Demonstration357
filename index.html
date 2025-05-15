@@ -1,2 +1,327 @@
-This is a code file
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Roller</title>
+    <style>
+        :root {
+            --primary: #8a2be2;
+            --secondary: #4a148c;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --text: #ffffff;
+            --text-secondary: #b0b0b0;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background-color: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .control-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            background-color: #2d2d2d;
+            color: var(--text);
+            border: 1px solid #444;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.3);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .roll-btn {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .roll-btn:hover {
+            background-color: #9d4edd;
+            transform: translateY(-2px);
+        }
+
+        .reset-btn {
+            background-color: #2d2d2d;
+            color: var(--text);
+        }
+
+        .reset-btn:hover {
+            background-color: #3d3d3d;
+            transform: translateY(-2px);
+        }
+
+        .dice-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .die {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            border-radius: 12px;
+            background: linear-gradient(145deg, var(--secondary), var(--primary));
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .die::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            pointer-events: none;
+        }
+
+        .rolling {
+            animation: rollDice 0.8s ease-out;
+        }
+
+        @keyframes rollDice {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+            }
+            25% {
+                transform: rotateX(180deg) rotateY(90deg) rotateZ(45deg) scale(0.8);
+            }
+            50% {
+                transform: rotateX(360deg) rotateY(180deg) rotateZ(90deg) scale(1.1);
+            }
+            75% {
+                transform: rotateX(180deg) rotateY(270deg) rotateZ(135deg) scale(0.9);
+            }
+            100% {
+                transform: rotateX(0deg) rotateY(360deg) rotateZ(0deg);
+            }
+        }
+
+        .results {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #2d2d2d;
+            border-radius: 8px;
+        }
+
+        .results span {
+            font-weight: bold;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dice Roller</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="dice-count">Number of Dice</label>
+                <select id="dice-count">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="dice-sides">Sides per Die</label>
+                <select id="dice-sides">
+                    <option value="4">4 (d4)</option>
+                    <option value="6">6 (d6)</option>
+                    <option value="8">8 (d8)</option>
+                    <option value="10">10 (d10)</option>
+                    <option value="12">12 (d12)</option>
+                    <option value="20" selected>20 (d20)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="roll-btn" id="roll-button">ROLL DICE</button>
+            <button class="reset-btn" id="reset-button">RESET</button>
+        </div>
+        
+        <div class="dice-container" id="dice-container"></div>
+        
+        <div class="results" id="results">
+            Total: <span id="total">0</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const diceContainer = document.getElementById('dice-container');
+            const rollButton = document.getElementById('roll-button');
+            const resetButton = document.getElementById('reset-button');
+            const diceCountSelect = document.getElementById('dice-count');
+            const diceSidesSelect = document.getElementById('dice-sides');
+            const totalElement = document.getElementById('total');
+            
+            let currentDice = [];
+            
+            // Initialize dice
+            function initDice() {
+                const diceCount = parseInt(diceCountSelect.value);
+                const diceSides = parseInt(diceSidesSelect.value);
+                
+                // Clear previous dice
+                diceContainer.innerHTML = '';
+                currentDice = [];
+                
+                // Create new dice
+                for (let i = 0; i < diceCount; i++) {
+                    const die = document.createElement('div');
+                    die.classList.add('die');
+                    die.innerHTML = '?';
+                    die.dataset.sides = diceSides;
+                    die.dataset.value = '0';
+                    
+                    diceContainer.appendChild(die);
+                    currentDice.push(die);
+                }
+                
+                totalElement.textContent = '0';
+            }
+            
+            // Roll dice with animation
+            function rollDice() {
+                if (currentDice.length === 0) {
+                    initDice();
+                }
+                
+                let total = 0;
+                
+                currentDice.forEach(die => {
+                    // Add rolling animation
+                    die.classList.remove('rolling');
+                    void die.offsetWidth; // Trigger reflow for animation reset
+                    die.classList.add('rolling');
+                    
+                    const sides = parseInt(die.dataset.sides);
+                    const value = Math.floor(Math.random() * sides) + 1;
+                    
+                    die.dataset.value = value;
+                    
+                    // Use setTimeout for visual effect of rolling
+                    setTimeout(() => {
+                        die.innerHTML = value;
+                        
+                        // Calculate total after last die animation
+                        if (die === currentDice[currentDice.length - 1]) {
+                            setTimeout(() => {
+                                updateTotal();
+                            }, 100);
+                        }
+                    }, 800);
+                });
+            }
+            
+            // Update total
+            function updateTotal() {
+                let total = 0;
+                currentDice.forEach(die => {
+                    total += parseInt(die.dataset.value);
+                });
+                
+                totalElement.textContent = total;
+            }
+            
+            // Reset everything
+            function resetAll() {
+                diceCountSelect.value = '1';
+                diceSidesSelect.value = '20';
+                initDice();
+            }
+            
+            // Event listeners
+            rollButton.addEventListener('click', rollDice);
+            resetButton.addEventListener('click', resetAll);
+            
+            diceCountSelect.addEventListener('change', initDice);
+            diceSidesSelect.addEventListener('change', initDice);
+            
+            // Initialize on load
+            initDice();
+        });
+    </script>
+</body>
+</html>
